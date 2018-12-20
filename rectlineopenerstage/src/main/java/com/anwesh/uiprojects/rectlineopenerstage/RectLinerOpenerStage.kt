@@ -186,6 +186,26 @@ class RectLinerOpenerStage(ctx : Context) : View(ctx) {
         fun startUpdating(cb : () -> Unit) {
             curr.startUpdating(cb)
         }
+    }
 
+    data class Renderer(var view : RectLinerOpenerStage) {
+        private val rlo : RectLinerOpener = RectLinerOpener(0)
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#BDBDBD"))
+            rlo.draw(canvas, paint)
+            animator.animate {
+                rlo.update{i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            rlo.startUpdating {
+                animator.start()
+            }
+        }
     }
 }
