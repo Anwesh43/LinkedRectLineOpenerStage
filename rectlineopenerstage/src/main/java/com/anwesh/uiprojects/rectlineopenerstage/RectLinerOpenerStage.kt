@@ -210,4 +210,12 @@ class RectLinerOpenerStage(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+        fun create(activity : Activity) : RectLinerOpenerStage {
+            val view : RectLinerOpenerStage = RectLinerOpenerStage(activity)
+            activity.setContentView(view)
+            return view 
+        }
+    }
 }
