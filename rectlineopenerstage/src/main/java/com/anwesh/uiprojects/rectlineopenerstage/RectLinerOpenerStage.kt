@@ -42,15 +42,15 @@ fun Canvas.drawRLONode(i : Int, scale : Float, paint : Paint) {
     paint.strokeCap = Paint.Cap.ROUND
     save()
     translate(gap * (i + 1), h/2)
-    rotate(90f * sc2)
     drawRect(RectF(-size, -size/2, size, size/2), paint)
     for (j in 0..(lines - 1)) {
-        val sc : Float = sc1.divideScale(j, lines)
+        val sc1j : Float = sc1.divideScale(j, lines)
+        val sc2j : Float = sc2.divideScale(j, lines)
         save()
         rotate(90f)
         translate(size, size/2)
-        rotate(90f * sc)
-        drawLine(0f, 0f, 0f, size/2, paint)
+        rotate(90f * sc2j)
+        drawLine(0f, 0f, 0f, size/2 * sc1j, paint)
         restore()
     }
     restore()
@@ -215,7 +215,7 @@ class RectLinerOpenerStage(ctx : Context) : View(ctx) {
         fun create(activity : Activity) : RectLinerOpenerStage {
             val view : RectLinerOpenerStage = RectLinerOpenerStage(activity)
             activity.setContentView(view)
-            return view 
+            return view
         }
     }
 }
