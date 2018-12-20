@@ -22,13 +22,17 @@ val sizeFactor : Float = 2.7f
 
 fun Int.getInverse() : Float = 1f / this
 
-fun Float.divideScale(i : Int, n : Int) = Math.min(n.getInverse(), this - i * n.getInverse()) * n
+fun Float.divideScale(i : Int, n : Int) = Math.min(n.getInverse(), Math.max(0f, this - i * n.getInverse())) * n
 
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
 
-fun Float.mirrorValue(a : Int, b : Int) : Float = (1 - scaleFactor()) * a.getInverse() + scaleFactor()  * b.getInverse()
+fun Float.mirrorValue(a : Int, b : Int) : Float = ((1 - scaleFactor()) * a.getInverse()) + (scaleFactor()  * b.getInverse())
 
-fun Float.updateScale(dir : Float, a : Int, b : Int) : Float = scGap * dir * mirrorValue(lines, 1)
+fun Float.updateScale(dir : Float, a : Int, b : Int) : Float = scGap * dir * mirrorValue(a, b)
+
+fun Int.scaleX() : Float =  1f - 2 * (this % 2)
+
+fun Int.scaleY() : Float = 1f - 2 * (this / 2)
 
 fun Canvas.drawRLONode(i : Int, scale : Float, paint : Paint) {
     val w : Float = width.toFloat()
@@ -47,7 +51,7 @@ fun Canvas.drawRLONode(i : Int, scale : Float, paint : Paint) {
         val sc1j : Float = sc1.divideScale(j, lines)
         val sc2j : Float = sc2.divideScale(j, lines)
         save()
-        rotate(90f)
+        scale(j.scaleX(), j.scaleY())
         translate(size, size/2)
         rotate(90f * sc2j)
         drawLine(0f, 0f, 0f, size/2 * sc1j, paint)
@@ -78,7 +82,7 @@ class RectLinerOpenerStage(ctx : Context) : View(ctx) {
     data class State(var scale : Float = 0f, var dir : Float = 0f, var prevScale : Float = 0f) {
 
         fun update(cb : (Float) -> Unit) {
-            scale + scale.updateScale(dir, lines, 1)
+            scale += scale.updateScale(dir, lines, lines)
             if (Math.abs(scale - prevScale) > 1) {
                 scale = prevScale + dir
                 dir = 0f
