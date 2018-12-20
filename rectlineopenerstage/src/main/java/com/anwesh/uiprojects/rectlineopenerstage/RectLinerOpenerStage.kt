@@ -120,4 +120,42 @@ class RectLinerOpenerStage(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    data class RLONode(var i : Int, val state : State = State()) {
+        private var next : RLONode? = null
+        private var prev : RLONode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < nodes - 1) {
+                next = RLONode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun update(cb : (Int, Float) -> Unit) {
+            state.update {
+                cb(i, it)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : RLONode {
+            var curr : RLONode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
+        }
+    }
 }
