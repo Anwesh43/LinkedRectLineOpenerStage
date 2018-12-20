@@ -157,5 +157,35 @@ class RectLinerOpenerStage(ctx : Context) : View(ctx) {
             cb()
             return this
         }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawRLONode(i, state.scale, paint)
+            next?.draw(canvas, paint)
+        }
+    }
+
+    data class RectLinerOpener(var i : Int) {
+
+        private val root : RLONode = RLONode(0)
+        private var curr : RLONode = root
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            root.draw(canvas, paint)
+        }
+
+        fun update(cb : (Int, Float) -> Unit) {
+            curr.update {i, scl ->
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                cb(i, scl)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            curr.startUpdating(cb)
+        }
+
     }
 }
