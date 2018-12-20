@@ -34,6 +34,8 @@ fun Int.scaleX() : Float =  1f - 2 * (this % 2)
 
 fun Int.scaleY() : Float = 1f - 2 * (this / 2)
 
+val DELAY : Long = 25
+
 fun Canvas.drawRLONode(i : Int, scale : Float, paint : Paint) {
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
@@ -105,7 +107,7 @@ class RectLinerOpenerStage(ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(DELAY)
                     view.invalidate()
                 } catch(ex : Exception) {
 
