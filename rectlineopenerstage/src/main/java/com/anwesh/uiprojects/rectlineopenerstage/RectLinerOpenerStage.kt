@@ -72,7 +72,7 @@ fun Canvas.drawRLONode(i : Int, scale : Float, paint : Paint) {
         val sc2j : Float = sc2.divideScale(j, lines)
         save()
         scale(j.scaleX(), j.scaleY())
-        translate(size, size/2)
+        translate(size - paint.strokeWidth/2, size/2 - paint.strokeWidth/2)
         rotate(90f * sc2j)
         drawLine(0f, 0f, 0f, size/2 * sc1j, paint)
         restore()
