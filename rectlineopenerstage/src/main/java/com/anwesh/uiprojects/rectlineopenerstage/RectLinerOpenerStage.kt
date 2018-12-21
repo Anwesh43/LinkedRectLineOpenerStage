@@ -86,6 +86,12 @@ class RectLinerOpenerStage(ctx : Context) : View(ctx) {
 
     private val renderer : Renderer = Renderer(this)
 
+    var onAnimationCompleteListener : OnAnimationCompleteListener? = null
+
+    fun addOnAnimationCompleteListener(onComplete : (Int) -> Unit, onReset : (Int) -> Unit) {
+        onAnimationCompleteListener = OnAnimationCompleteListener(onComplete, onReset)
+    }
+
     override fun onDraw(canvas : Canvas) {
         renderer.render(canvas, paint)
     }
@@ -224,6 +230,10 @@ class RectLinerOpenerStage(ctx : Context) : View(ctx) {
             animator.animate {
                 rlo.update{i, scl ->
                     animator.stop()
+                    when (scl) {
+                        1f -> view.onAnimationCompleteListener?.onComplete?.invoke(i)
+                        0f -> view.onAnimationCompleteListener?.onReset?.invoke(i)
+                    }
                 }
             }
         }
@@ -242,4 +252,6 @@ class RectLinerOpenerStage(ctx : Context) : View(ctx) {
             return view
         }
     }
+
+    data class OnAnimationCompleteListener(var onComplete : (Int) -> Unit, var onReset : (Int) -> Unit)
 }
