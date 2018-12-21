@@ -36,6 +36,23 @@ fun Int.scaleY() : Float = 1f - 2 * (this / 2)
 
 val DELAY : Long = 25
 
+fun Canvas.drawProgressLineNode(y : Float, size : Float, scale : Float, paint : Paint) {
+    val sc1 : Float = scale.divideScale(0, 2)
+    val sc2 : Float = scale.divideScale(1, 2)
+    for (j in 0..1) {
+        save()
+        translate(0f, y * (1 - 2 * j))
+        rotate(90f * sc2)
+        for (k in 0..1) {
+            val sc : Float = sc1.divideScale(k, 2)
+            save()
+            drawLine(0f, 0f, 0f, size * sc * (1 - 2 * k), paint)
+            restore()
+        }
+        restore()
+    }
+}
+
 fun Canvas.drawRLONode(i : Int, scale : Float, paint : Paint) {
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
@@ -48,6 +65,7 @@ fun Canvas.drawRLONode(i : Int, scale : Float, paint : Paint) {
     paint.strokeCap = Paint.Cap.ROUND
     save()
     translate(gap * (i + 1), h/2)
+    drawProgressLineNode(0.3f * h, gap/2, scale, paint)
     drawRect(RectF(-size, -size/2, size, size/2), paint)
     for (j in 0..(lines - 1)) {
         val sc1j : Float = sc1.divideScale(j, lines)
